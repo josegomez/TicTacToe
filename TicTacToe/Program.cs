@@ -8,14 +8,19 @@ namespace TicTacToe
 {
     class Program
     {
+        //Holds the currentPlayer change this to Y and back for every turn
         static string currentPlayer = "X";
         static void Main(string[] args)
         {
+            //Declares a 3x3 array for the board. 
+            //Any given position in the board can be accessed by the x,y coordiantes IE: tickTacToeBoard[1,2]
             string[,] tickTacToeBoard= new string[3,3];
+
             ResetBoard(tickTacToeBoard);
             PrintBoard(tickTacToeBoard);
             
-            while(true)
+            //Game Loop
+            while(!CheckWinner(tickTacToeBoard))
             {
                 Console.Write($"Player {currentPlayer} Enter Position to Play (1-9):");
                 string enteredPosition = Console.ReadLine();
@@ -23,6 +28,16 @@ namespace TicTacToe
 
         }
 
+        private static bool CheckWinner(string[,] tickTacToeBoard)
+        {
+            //TODO: Implement Logic check to see if someone won.
+            return false;
+        }
+
+        /// <summary>
+        /// Resets the board up, placing a sequential number on each box to allow the players to play
+        /// </summary>
+        /// <param name="tickTacToeBoard"></param>
         private static void ResetBoard(string[,] tickTacToeBoard)
         {
             int ct = 1;
@@ -35,6 +50,10 @@ namespace TicTacToe
             }
         }
 
+        /// <summary>
+        /// Prints the Game Board
+        /// </summary>
+        /// <param name="tickTacToeBoard"></param>
         public static void PrintBoard(string[,] tickTacToeBoard)
         {
 
