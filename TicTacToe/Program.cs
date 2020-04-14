@@ -23,7 +23,7 @@ namespace TicTacToe
             while(!CheckWinner(tickTacToeBoard))
             {
                 Console.Write($"Player {currentPlayer} Enter Position to Play (1-9):");
-                string enteredPosition = Console.ReadLine();
+                string enteredPosition = Console.ReadLine(); // Check the user entered 1-9 and if that space is avaialble then set it to X or Y then check if someone won...
             }
 
         }
