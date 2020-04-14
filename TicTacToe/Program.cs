@@ -24,6 +24,7 @@ namespace TicTacToe
             {
                 Console.Write($"Player {currentPlayer} Enter Position to Play (1-9):");
                 string enteredPosition = Console.ReadLine(); // Check the user entered 1-9 and if that space is avaialble then set it to X or Y then check if someone won...
+                //Print the board after every turn and swap between X and Y player alternating
             }
 
         }
