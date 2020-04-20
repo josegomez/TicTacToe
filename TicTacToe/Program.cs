@@ -10,15 +10,66 @@ namespace TicTacToe
     {
         //Holds the currentPlayer change this to Y and back for every turn
         static string currentPlayer = "X";
+        static bool debug = false;
         static void Main(string[] args)
         {
+
+            
             //Declares a 3x3 array for the board. 
             //Any given position in the board can be accessed by the x,y coordiantes IE: tickTacToeBoard[1,2]
+            /*
             string[,] tickTacToeBoard = new string[3, 3];
 
             ResetBoard(tickTacToeBoard);
+            
+
+            
+            PrintBoard(tickTacToeBoard);
+            Console.ReadLine();
+            */
+
+            //this section is for testing
+            BoardTree allBoards = new BoardTree();
+            BoardTree currentBoard = new BoardTree();
+            ResetBoard(allBoards.Board);
+            ResetBoard(currentBoard.Board);
+            AddChildren(allBoards, "X");
+            currentPlayer = "X";
+            while (currentBoard.endState == false)
+            {
+                //PrintBoard(allBoards.Board);
+                Console.Clear();
+                PrintBoard(currentBoard.Board);
+                Console.WriteLine($"win: {currentBoard.winner.ToString()} . Endstate {currentBoard.endState.ToString()} Plays: {currentBoard.plays}");
+                Console.Write($"Player {currentPlayer} Enter Position to Play (1-9):");
+                string enteredPosition = Console.ReadLine();
+                currentBoard = AddMove(currentBoard, enteredPosition);
+                //Console.WriteLine(currentBoard);
+                
+                foreach (var childBoard in allBoards.Children)
+                {
+
+                    //Console.WriteLine(currentBoard); Console.WriteLine(childBoard);
+                    if (childBoard.ToString() == currentBoard.ToString())
+                    {
+                        //Console.WriteLine("true");
+                        currentBoard = childBoard;
+                        break;
+                    }
+                    //Console.ReadLine();
+                }
+                
+                allBoards = currentBoard;
+
+            }
+            string winningPlayer = currentPlayer == "X" ? "O" : currentPlayer == "O" ? "X" : currentPlayer;
+            Console.Clear();
+            Console.WriteLine(currentBoard);
+            Console.WriteLine($"Player {winningPlayer} wins!");
+            Console.ReadLine();
 
 
+            /*
             //Game Loop
             while (!CheckWinner(tickTacToeBoard))
             {
@@ -33,11 +84,11 @@ namespace TicTacToe
                     if (enteredNum > 0 && enteredNum < 10)
                     {
                         //Print the board after every turn and swap between X and Y player alternating
-                        int y = (enteredNum - 1) / 3;
-                        int x = (enteredNum - (y * 3)) - 1;
-                        if (tickTacToeBoard[y, x] != "X" && tickTacToeBoard[y, x] != "O")
+                        int row = (enteredNum - 1) / 3;
+                        int column = (enteredNum - (row * 3)) - 1;
+                        if (tickTacToeBoard[row, column] != "X" && tickTacToeBoard[row, column] != "O")
                         {
-                            tickTacToeBoard[y, x] = currentPlayer;
+                            tickTacToeBoard[row, column] = currentPlayer;
                             if (currentPlayer == "X")
                             {
                                 currentPlayer = "O";
@@ -51,6 +102,7 @@ namespace TicTacToe
                     }
                 }
             }
+            */
 
         }
 
@@ -124,6 +176,7 @@ namespace TicTacToe
             }
         }
 
+
         public static bool CheckMyArray(string[] myCheckArray)
         {
             if (myCheckArray[0] == myCheckArray[1])
@@ -161,6 +214,76 @@ namespace TicTacToe
             Console.WriteLine($"\t\t  {tickTacToeBoard[2, 0]}  |  {tickTacToeBoard[2, 1]}  |  {tickTacToeBoard[2, 2]}");
 
             Console.WriteLine("\t\t     |     |      ");
+        }
+
+        public static void AddChildren(BoardTree node, string player)
+        {
+            if (node.endState == false)
+            {
+                bool emtpySpaces = false;
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        if (node.Board[i, j] != "X" && node.Board[i, j] != "O")
+                        {
+                            BoardTree newchild = new BoardTree((string[,])node.Board.Clone());
+                            newchild.Board[i, j] = player;
+                            //newchild.plays = node.plays +1;
+                            node.AddChild(newchild, i, j, node.plays);
+                            if (debug == true)
+                            {
+                                Console.WriteLine(newchild);
+                                Console.WriteLine($"win: {newchild.winner.ToString()} . Endstate {newchild.endState.ToString()} Plays: {newchild.plays}");
+                                Console.ReadLine();
+                            }
+                            emtpySpaces = true;
+                            AddChildren(newchild, player=="X"?"O":player=="O"?"X":player);
+                        }
+                        
+                    }
+                }
+
+                
+                if (emtpySpaces == false)
+                {
+                    node.endState = true;
+                    node.winner = 0;
+                }
+            }
+        }
+
+        public static BoardTree AddMove(BoardTree currentBoard, string enteredPosition)
+        {
+            bool canConvert = int.TryParse(enteredPosition, out int enteredNum);
+            if (canConvert == true)
+            {
+                if (enteredNum > 0 && enteredNum < 10)
+                {
+                    int row = (enteredNum - 1) / 3;
+                    int column = (enteredNum - (row * 3)) - 1;
+                    string existing = currentBoard.Board[row, column];
+                    if (existing != "X" && existing != "O")
+                    {
+                        currentBoard.Board[row, column] = currentPlayer;
+                        SwitchPlayer();
+                    }
+                    
+                }
+            }
+            return currentBoard;
+        }
+
+        public static void SwitchPlayer()
+        {
+            if (currentPlayer == "X")
+            {
+                currentPlayer = "O";
+            }
+            else if (currentPlayer == "O")
+            {
+                currentPlayer = "X";
+            }
         }
     }
 }
