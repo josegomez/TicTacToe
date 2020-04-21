@@ -20,7 +20,11 @@ namespace TicTacToe
 
         public int winValue { get; set; }
 
+        
+
         public List<BoardTree> Children { get; set; }
+
+        public BoardTree parent { get; set; }
 
         public BoardTree(string[,] Board)
         {
@@ -40,10 +44,16 @@ namespace TicTacToe
             this.Children.Add(node);
             node.CheckWin(row, column);
             node.plays = plays +1;
+            node.parent = this;
+            if (node.winner != 0)
+            {
+                node.SetWinStats(node.winner);
+            }
             if (node.plays == 9)
             {
                 node.endState = true;
             }
+            
         }
 
         public override string ToString()
@@ -97,6 +107,23 @@ namespace TicTacToe
                 board.winner = -1;
             }
             board.endState = true;
+        }
+
+        private void SetWinStats(int winner)
+        {
+            if (this.parent != null)
+            {
+                BoardTree parent = this.parent;
+                parent.winValue += winner;
+                if (winner == 1)
+                {
+                    parent.SetWinStats(1);
+                }
+                else if (winner == -1)
+                {
+                    parent.SetWinStats(-1);
+                }
+            }   
         }
     }
 }
