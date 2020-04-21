@@ -35,37 +35,71 @@ namespace TicTacToe
             ResetBoard(currentBoard.Board);
             AddChildren(allBoards, "X");
             currentPlayer = "X";
+            bool humanTurn = true;
             while (currentBoard.endState == false)
             {
-                //PrintBoard(allBoards.Board);
                 Console.Clear();
                 PrintBoard(currentBoard.Board);
-                Console.WriteLine($"win: {currentBoard.winner.ToString()} . Endstate {currentBoard.endState.ToString()} Plays: {currentBoard.plays}");
-                Console.Write($"Player {currentPlayer} Enter Position to Play (1-9):");
-                string enteredPosition = Console.ReadLine();
-                currentBoard = AddMove(currentBoard, enteredPosition);
-                //Console.WriteLine(currentBoard);
-                
-                foreach (var childBoard in allBoards.Children)
+                Console.WriteLine($"win: {currentBoard.winner.ToString()} . Endstate {currentBoard.endState.ToString()} Plays: {currentBoard.plays} WinValue: {currentBoard.winValue}");
+                if (humanTurn)
                 {
-
-                    //Console.WriteLine(currentBoard); Console.WriteLine(childBoard);
-                    if (childBoard.ToString() == currentBoard.ToString())
+                    Console.Write($"Player {currentPlayer} Enter Position to Play (1-9):");
+                    string enteredPosition = Console.ReadLine();
+                    currentBoard = AddMove(currentBoard, enteredPosition);
+                    foreach (var childBoard in allBoards.Children)
                     {
-                        //Console.WriteLine("true");
-                        currentBoard = childBoard;
-                        break;
-                    }
-                    //Console.ReadLine();
-                }
-                
-                allBoards = currentBoard;
 
+
+                        if (childBoard.ToString() == currentBoard.ToString())
+                        {
+                            currentBoard = childBoard;
+                            break;
+                        }
+                    }
+
+                    allBoards = currentBoard;
+                    humanTurn = false;
+                }
+                else
+                {
+                    int maxwin = 0;
+                    BoardTree nextboard = null;
+                    foreach (var winmax in allBoards.Children)
+                    {
+                        if (maxwin == 0)
+                        {
+                            maxwin = winmax.winValue;
+                            nextboard = winmax;
+                        }
+                        if (winmax.winValue <= maxwin)
+                        {
+                            maxwin = winmax.winValue;
+                            nextboard = winmax;
+                        }
+                        if (winmax.winner == -1)
+                        {
+                            nextboard = winmax;
+                            break;
+                        }
+                    }
+                    currentBoard = nextboard;
+                    allBoards = currentBoard;
+                    humanTurn = true;
+                    SwitchPlayer();
+                }
             }
+
             string winningPlayer = currentPlayer == "X" ? "O" : currentPlayer == "O" ? "X" : currentPlayer;
             Console.Clear();
             Console.WriteLine(currentBoard);
-            Console.WriteLine($"Player {winningPlayer} wins!");
+            if (currentBoard.winner != 0)
+            {
+                Console.WriteLine($"Player {winningPlayer} wins!");
+            }
+            else
+            {
+                Console.WriteLine("Stalemate");
+            }
             Console.ReadLine();
 
 
