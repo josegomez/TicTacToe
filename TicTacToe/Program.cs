@@ -41,6 +41,13 @@ namespace TicTacToe
                 Console.Clear();
                 PrintBoard(currentBoard.Board);
                 Console.WriteLine($"win: {currentBoard.winner.ToString()} . Endstate {currentBoard.endState.ToString()} Plays: {currentBoard.plays} WinValue: {currentBoard.winValue}");
+                //this loop is used to troubleshoot what the next move is
+                /*
+                foreach (var nextBoard in currentBoard.Children)
+                {
+                    Console.WriteLine(nextBoard.winValue);
+                }
+                */
                 if (humanTurn)
                 {
                     Console.Write($"Player {currentPlayer} Enter Position to Play (1-9):");
@@ -62,14 +69,18 @@ namespace TicTacToe
                 }
                 else
                 {
+                    Console.WriteLine("Computers turn, hit enter");
+                    Console.ReadLine();
                     decimal maxwin = 0;
+                    bool first = true;
                     BoardTree nextboard = null;
                     foreach (var winmax in allBoards.Children)
                     {
-                        if (maxwin == 0)
+                        if (first == true)
                         {
                             maxwin = winmax.winValue;
                             nextboard = winmax;
+                            first = false;
                         }
                         if (winmax.winValue <= maxwin)
                         {

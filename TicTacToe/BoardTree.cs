@@ -103,11 +103,11 @@ namespace TicTacToe
         {
             if (board.Board[row, column] == "X")
             {
-                board.winner = 1;
+                board.winner = 20;
             }
             if (board.Board[row, column] == "O")
             {
-                board.winner = -1;
+                board.winner = -20;
             }
             board.endState = true;
         }
