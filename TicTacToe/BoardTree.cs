@@ -22,6 +22,8 @@ namespace TicTacToe
 
         public decimal numChild;
 
+        public bool nextMoveWin;
+
         public List<BoardTree> Children { get; set; }
 
         public BoardTree parent { get; set; }
@@ -103,11 +105,11 @@ namespace TicTacToe
         {
             if (board.Board[row, column] == "X")
             {
-                board.winner = 1;
+                board.winner = 100;
             }
             if (board.Board[row, column] == "O")
             {
-                board.winner = -1;
+                board.winner = -100;
             }
             board.endState = true;
         }
@@ -117,7 +119,17 @@ namespace TicTacToe
             if (this.parent != null)
             {
                 BoardTree parent = this.parent;
-                parent.winValue = ((parent.winValue * parent.Children.Count) + this.winValue) / (parent.Children.Count + 1);
+                if (this.winner != 0)
+                {
+                    parent.nextMoveWin = true;
+                }
+                /*
+                else
+                {
+                    parent.nextMoveWin = false;
+                }
+                */
+                parent.winValue = (((parent.winValue * parent.Children.Count)) + this.winValue) / (parent.Children.Count + 1);
                 //parent.numChild += 1;
                 parent.SetWinStats();
             }   

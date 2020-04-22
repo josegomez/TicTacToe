@@ -41,6 +41,13 @@ namespace TicTacToe
                 Console.Clear();
                 PrintBoard(currentBoard.Board);
                 Console.WriteLine($"win: {currentBoard.winner.ToString()} . Endstate {currentBoard.endState.ToString()} Plays: {currentBoard.plays} WinValue: {currentBoard.winValue}");
+                //this loop is used to troubleshoot what the next move is
+                
+                foreach (var nextBoard in currentBoard.Children)
+                {
+                    Console.WriteLine(nextBoard.winValue.ToString() + nextBoard.nextMoveWin);
+                }
+                
                 if (humanTurn)
                 {
                     Console.Write($"Player {currentPlayer} Enter Position to Play (1-9):");
@@ -48,7 +55,6 @@ namespace TicTacToe
                     currentBoard = AddMove(currentBoard, enteredPosition);
                     foreach (var childBoard in allBoards.Children)
                     {
-
 
                         if (childBoard.ToString() == currentBoard.ToString())
                         {
@@ -62,25 +68,33 @@ namespace TicTacToe
                 }
                 else
                 {
+                    Console.WriteLine("Computers turn, hit enter");
+                    Console.ReadLine();
                     decimal maxwin = 0;
+                    bool first = true;
                     BoardTree nextboard = null;
                     foreach (var winmax in allBoards.Children)
                     {
-                        if (maxwin == 0)
+                        if (first == true)
                         {
                             maxwin = winmax.winValue;
                             nextboard = winmax;
+                            first = false;
                         }
-                        if (winmax.winValue <= maxwin)
+                        if (winmax.nextMoveWin == false)
                         {
-                            maxwin = winmax.winValue;
-                            nextboard = winmax;
+                            if (winmax.winValue <= maxwin)
+                            {
+                                maxwin = winmax.winValue;
+                                nextboard = winmax;
+                            }
+                            if (winmax.winner == -1)
+                            {
+                                nextboard = winmax;
+                                break;
+                            }
                         }
-                        if (winmax.winner == -1)
-                        {
-                            nextboard = winmax;
-                            break;
-                        }
+
                     }
                     currentBoard = nextboard;
                     allBoards = currentBoard;
