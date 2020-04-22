@@ -62,7 +62,7 @@ namespace TicTacToe
                 }
                 else
                 {
-                    int maxwin = 0;
+                    decimal maxwin = 0;
                     BoardTree nextboard = null;
                     foreach (var winmax in allBoards.Children)
                     {

@@ -10,7 +10,7 @@ namespace TicTacToe
     {
         public string[,] Board { get; set; }
 
-        public int winner { get; set; }
+        public decimal winner { get; set; }
         //+1 means that O is the winner, -1 means that O is the winner, 0 means tie or game not done
 
         public bool endState { get; set; }
@@ -18,9 +18,9 @@ namespace TicTacToe
 
         public int plays { get; set; }
 
-        public int winValue { get; set; }
+        public decimal winValue { get; set; }
 
-        
+        public decimal numChild;
 
         public List<BoardTree> Children { get; set; }
 
@@ -47,11 +47,14 @@ namespace TicTacToe
             node.parent = this;
             if (node.winner != 0)
             {
-                node.SetWinStats(node.winner);
+                node.numChild = 1;
+                node.winValue = node.winner;
+                node.SetWinStats();
             }
             if (node.plays == 9)
             {
                 node.endState = true;
+                node.SetWinStats();
             }
             
         }
@@ -109,20 +112,14 @@ namespace TicTacToe
             board.endState = true;
         }
 
-        private void SetWinStats(int winner)
+        private void SetWinStats()
         {
             if (this.parent != null)
             {
                 BoardTree parent = this.parent;
-                parent.winValue += winner;
-                if (winner == 1)
-                {
-                    parent.SetWinStats(1);
-                }
-                else if (winner == -1)
-                {
-                    parent.SetWinStats(-1);
-                }
+                parent.winValue = ((parent.winValue * parent.Children.Count) + this.winValue) / (parent.Children.Count + 1);
+                //parent.numChild += 1;
+                parent.SetWinStats();
             }   
         }
     }
